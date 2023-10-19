@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const app = express();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { query } = require('express');
 const port = process.env.PORT || 5003;
 
 //middleware
@@ -32,7 +33,7 @@ async function run() {
 
     const productCollection = client.db('productDB').collection('products');
     const brandCollection = client.db('brandDB').collection('brandcollection');
-
+    const cartProduct = [];
     app.get('/storedItem', async(req, res)=>{
         const cursor = brandCollection.find();
         const result = await cursor.toArray();
@@ -47,6 +48,63 @@ async function run() {
         const cursor = productCollection.find();
         const result = await cursor.toArray();
         res.send(result)
+    })
+
+    //apple products api
+    app.get('/products/apple', async(req, res)=>{
+        const cursor = productCollection.find({brand_name :"Apple"});
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    //samsung products api
+    app.get('/products/samsung', async(req, res)=>{
+        const cursor = productCollection.find({brand_name :"Samsung"});
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    //intel products api
+    app.get('/products/intel', async(req, res)=>{
+        const cursor = productCollection.find({brand_name :"Intel"});
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    //ryzen products api
+    app.get('/products/ryzen', async(req, res)=>{
+        const cursor = productCollection.find({brand_name :"Ryzen"});
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    //nvidia products api
+    app.get('/products/nvidia', async(req, res)=>{
+        const cursor = productCollection.find({brand_name :"Nvidia"});
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    //get api for sepecefic product
+    app.get('/products/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const product = await productCollection.findOne(query);
+       res.send(product)
+    })
+    //update products
+    app.put('/products/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const product = req.body;
+      const options = {upsert : true};
+      const updatedProduct = {
+        $set:{
+          name: product.name,
+          brand_name: product.brand_name,
+          brand_image: product.brand_image,
+          type: product.type,
+          price: product.price,
+          rate: product.rate
+        }
+      }
+      const result = await productCollection.updateOne(filter, updatedProduct, options)
+      res.send(result)
     })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
