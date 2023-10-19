@@ -10,11 +10,6 @@ const port = process.env.PORT || 5003;
 app.use(cors());
 app.use(express.json());
 
-
-//brandshopuser
-//dPOdP2k0uTgMQVLu
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.hiylnp2.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -29,7 +24,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
 
     const productCollection = client.db('productDB').collection('products');
     const brandCollection = client.db('brandDB').collection('brandcollection');
@@ -138,8 +133,8 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-  res.send('my crud server is running')
+  res.send('My CRUD Server is running')
 })
 app.listen(port, () => {
-  console.log('crud server is running on 5000')
+  console.log(`My CRUD Server is running on ${port}`)
 })
