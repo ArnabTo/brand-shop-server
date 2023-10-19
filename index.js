@@ -33,68 +33,70 @@ async function run() {
 
     const productCollection = client.db('productDB').collection('products');
     const brandCollection = client.db('brandDB').collection('brandcollection');
-    const cartProduct = [];
-    app.get('/storedItem', async(req, res)=>{
-        const cursor = brandCollection.find();
-        const result = await cursor.toArray();
-        res.send(result)
+    const cartItemCollection = client.db('cartDB').collection('productcollection');
+
+
+    app.get('/storedItem', async (req, res) => {
+      const cursor = brandCollection.find();
+      const result = await cursor.toArray();
+      res.send(result)
     })
-    app.post('/products', async(req, res)=>{
-        const newProduct = req.body;
-        const result = await productCollection.insertOne(newProduct);
-        res.send(result)  
+    app.post('/products', async (req, res) => {
+      const newProduct = req.body;
+      const result = await productCollection.insertOne(newProduct);
+      res.send(result)
     })
-    app.get('/products', async(req,res)=>{
-        const cursor = productCollection.find();
-        const result = await cursor.toArray();
-        res.send(result)
+    app.get('/products', async (req, res) => {
+      const cursor = productCollection.find();
+      const result = await cursor.toArray();
+      res.send(result)
     })
 
     //apple products api
-    app.get('/products/apple', async(req, res)=>{
-        const cursor = productCollection.find({brand_name :"Apple"});
-        const result = await cursor.toArray();
-        res.send(result);
+    app.get('/products/apple', async (req, res) => {
+      const cursor = productCollection.find({ brand_name: "Apple" });
+      const result = await cursor.toArray();
+      res.send(result);
     })
     //samsung products api
-    app.get('/products/samsung', async(req, res)=>{
-        const cursor = productCollection.find({brand_name :"Samsung"});
-        const result = await cursor.toArray();
-        res.send(result);
+    app.get('/products/samsung', async (req, res) => {
+      const cursor = productCollection.find({ brand_name: "Samsung" });
+      const result = await cursor.toArray();
+      res.send(result);
     })
     //intel products api
-    app.get('/products/intel', async(req, res)=>{
-        const cursor = productCollection.find({brand_name :"Intel"});
-        const result = await cursor.toArray();
-        res.send(result);
+    app.get('/products/intel', async (req, res) => {
+      const cursor = productCollection.find({ brand_name: "Intel" });
+      const result = await cursor.toArray();
+      res.send(result);
     })
     //ryzen products api
-    app.get('/products/ryzen', async(req, res)=>{
-        const cursor = productCollection.find({brand_name :"Ryzen"});
-        const result = await cursor.toArray();
-        res.send(result);
+    app.get('/products/ryzen', async (req, res) => {
+      const cursor = productCollection.find({ brand_name: "Ryzen" });
+      const result = await cursor.toArray();
+      res.send(result);
     })
     //nvidia products api
-    app.get('/products/nvidia', async(req, res)=>{
-        const cursor = productCollection.find({brand_name :"Nvidia"});
-        const result = await cursor.toArray();
-        res.send(result);
+    app.get('/products/nvidia', async (req, res) => {
+      const cursor = productCollection.find({ brand_name: "Nvidia" });
+      const result = await cursor.toArray();
+      res.send(result);
     })
     //get api for sepecefic product
-    app.get('/products/:id', async(req, res)=>{
+    app.get('/products/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const product = await productCollection.findOne(query);
-       res.send(product)
+      res.send(product)
     })
     //update products
-    app.put('/products/:id', async(req, res)=>{
+    app.put('/products/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
       const product = req.body;
-      const options = {upsert : true};
+      const options = { upsert: true };
       const updatedProduct = {
-        $set:{
+        $set: {
           name: product.name,
           brand_name: product.brand_name,
           brand_image: product.brand_image,
@@ -104,6 +106,17 @@ async function run() {
         }
       }
       const result = await productCollection.updateOne(filter, updatedProduct, options)
+      res.send(result)
+    })
+    //product car api
+    app.post('/cartproducts', async (req, res) => {
+      const cartProduct = req.body;
+      const result = await cartItemCollection.insertOne(cartProduct);
+      res.send(result);
+    })
+    app.get('/cartproducts', async (req, res) => {
+      const cursor = cartItemCollection.find();
+      const result = await cursor.toArray();
       res.send(result)
     })
     // Send a ping to confirm a successful connection
@@ -117,9 +130,9 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get('/', (req, res)=>{
-    res.send('my crud server is running')
+app.get('/', (req, res) => {
+  res.send('my crud server is running')
 })
-app.listen(port, ()=>{
-    console.log('crud server is running on 5000')
+app.listen(port, () => {
+  console.log('crud server is running on 5000')
 })
