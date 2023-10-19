@@ -108,7 +108,7 @@ async function run() {
       const result = await productCollection.updateOne(filter, updatedProduct, options)
       res.send(result)
     })
-    //product car api
+    //product cart api
     app.post('/cartproducts', async (req, res) => {
       const cartProduct = req.body;
       const result = await cartItemCollection.insertOne(cartProduct);
@@ -117,6 +117,13 @@ async function run() {
     app.get('/cartproducts', async (req, res) => {
       const cursor = cartItemCollection.find();
       const result = await cursor.toArray();
+      res.send(result)
+    })
+
+    app.delete('/cartproducts/:id', async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id:id}
+      const result = await cartItemCollection.deleteOne(query);
       res.send(result)
     })
     // Send a ping to confirm a successful connection
